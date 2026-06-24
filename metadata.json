@@ -1,0 +1,6 @@
+{
+  "name": "BrainDrop",
+  "description": "Capture. Organize. Create. Turn Ideas Into Reality.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
