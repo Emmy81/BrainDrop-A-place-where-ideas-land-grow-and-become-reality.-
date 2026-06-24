@@ -57,6 +57,20 @@ class IdeaViewModel(
         return repository.getIdeaById(id)
     }
 
+    fun convertToProject(idea: Idea) {
+        viewModelScope.launch {
+            _isAnalyzing.update { true }
+            val response = geminiService.convertToProject(idea.title, idea.description, idea.aiResponse)
+            val updatedIdea = idea.copy(
+                category = "Project",
+                projectData = response,
+                updatedDate = System.currentTimeMillis()
+            )
+            repository.update(updatedIdea)
+            _isAnalyzing.update { false }
+        }
+    }
+
     fun updateIdeaAiResponse(idea: Idea, aiResponse: String) {
         viewModelScope.launch {
             repository.update(idea.copy(aiResponse = aiResponse, updatedDate = System.currentTimeMillis()))

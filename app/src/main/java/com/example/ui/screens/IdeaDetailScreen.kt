@@ -5,9 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -86,11 +90,30 @@ fun IdeaDetailScreen(
                     )
                 }
 
-                IconButton(onClick = {
-                    viewModel.deleteIdea(idea)
-                    onNavigateBack()
-                }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = ErrorRed)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = {
+                        viewModel.updateIdea(idea.copy(isFavorite = !idea.isFavorite))
+                    }) {
+                        Icon(
+                            if (idea.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite",
+                            tint = if (idea.isFavorite) NeonPurple else Color.White
+                        )
+                    }
+
+                    IconButton(onClick = {
+                        viewModel.updateIdea(idea.copy(isArchived = !idea.isArchived))
+                        onNavigateBack()
+                    }) {
+                        Icon(Icons.Default.Archive, contentDescription = "Archive", tint = Color.White)
+                    }
+
+                    IconButton(onClick = {
+                        viewModel.deleteIdea(idea)
+                        onNavigateBack()
+                    }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = ErrorRed)
+                    }
                 }
             }
 
@@ -181,8 +204,7 @@ fun IdeaDetailScreen(
                     item {
                         OutlinedButton(
                             onClick = {
-                                viewModel.updateIdea(idea.copy(category = "Project"))
-                                onNavigateBack()
+                                viewModel.convertToProject(idea)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -191,7 +213,39 @@ fun IdeaDetailScreen(
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = NeonBlue),
                             border = androidx.compose.foundation.BorderStroke(1.dp, NeonBlue)
                         ) {
-                            Text("Convert to Project", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                            Text("Convert to Project via AI", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                        }
+                        Spacer(modifier = Modifier.height(32.dp))
+                    }
+                }
+                
+                if (idea.projectData != null) {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = SurfaceDark),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, NeonBlue.copy(alpha = 0.3f))
+                        ) {
+                            Column(modifier = Modifier.padding(20.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.Folder, contentDescription = "Project Plan", tint = NeonBlue)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Project Plan",
+                                        color = Color.White,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = idea.projectData,
+                                    color = Color.White.copy(alpha = 0.8f),
+                                    fontSize = 15.sp,
+                                    lineHeight = 22.sp
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(32.dp))
                     }

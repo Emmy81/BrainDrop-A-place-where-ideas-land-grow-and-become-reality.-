@@ -164,7 +164,7 @@ fun CreateIdeaScreen(
             ) {
                 Icon(Icons.Default.AutoAwesome, contentDescription = "AI")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Save & Analyze with AI", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text("Enhance with AI", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
             
             Spacer(modifier = Modifier.height(24.dp))

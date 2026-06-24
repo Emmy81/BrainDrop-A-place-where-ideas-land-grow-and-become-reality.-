@@ -16,8 +16,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.*
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.viewmodel.AiAssistantViewModel
+import com.example.viewmodel.IdeaViewModel
+
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(viewModel: IdeaViewModel, aiViewModel: AiAssistantViewModel) {
+    val allIdeas by viewModel.allIdeas.collectAsStateWithLifecycle()
+    val aiMessages by aiViewModel.messages.collectAsStateWithLifecycle()
+    
+    val totalIdeas = allIdeas.size
+    val projectsCreated = allIdeas.count { it.category == "Project" }
+    val completedIdeas = allIdeas.count { it.projectData != null && it.category == "Project" } // Approximation
+    val aiConversations = aiMessages.size / 2 // Approximation of turns
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,24 +69,79 @@ fun ProfileScreen() {
                 fontSize = 14.sp
             )
             
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             
-            // Settings options would go here
             Text(
-                text = "Settings",
+                text = "Brain Statistics",
                 color = Color.White,
                 fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.align(Alignment.Start)
             )
             
             Spacer(modifier = Modifier.height(16.dp))
             
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                StatBox(modifier = Modifier.weight(1f), title = "Total Drops", value = totalIdeas.toString(), color = NeonPurple)
+                StatBox(modifier = Modifier.weight(1f), title = "Projects", value = projectsCreated.toString(), color = NeonBlue)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                StatBox(modifier = Modifier.weight(1f), title = "AI Chats", value = aiConversations.toString(), color = NeonPurple)
+                StatBox(modifier = Modifier.weight(1f), title = "Completed", value = completedIdeas.toString(), color = Color(0xFF00E676))
+            }
+            
+            Spacer(modifier = Modifier.height(48.dp))
+            
             Text(
-                text = "Configure API Keys",
-                color = TextSecondary,
-                fontSize = 16.sp,
+                text = "Settings",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.align(Alignment.Start)
             )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            SettingsItem("Theme", "Dark Mode")
+            Spacer(modifier = Modifier.height(8.dp))
+            SettingsItem("AI Preferences", "Gemini 1.5 Flash")
+            Spacer(modifier = Modifier.height(8.dp))
+            SettingsItem("Data Export", "Backup to JSON")
         }
+    }
+}
+
+@Composable
+fun StatBox(modifier: Modifier = Modifier, title: String, value: String, color: Color) {
+    Surface(
+        modifier = modifier.aspectRatio(1.5f),
+        color = SurfaceDark,
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.3f))
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = value, color = color, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = title, color = TextSecondary, fontSize = 12.sp)
+        }
+    }
+}
+
+@Composable
+fun SettingsItem(title: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = title, color = Color.White, fontSize = 16.sp)
+        Text(text = value, color = TextSecondary, fontSize = 14.sp)
     }
 }

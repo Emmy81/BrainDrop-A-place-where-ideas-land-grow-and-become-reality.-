@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -64,10 +65,41 @@ fun AiAssistantScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Ask AI anything about your ideas...",
+                                text = "Ask BrainDrop AI anything about your ideas...",
                                 color = TextSecondary,
                                 fontSize = 16.sp
                             )
+                            
+                            Spacer(modifier = Modifier.height(32.dp))
+                            
+                            val prompts = listOf(
+                                "Improve my idea",
+                                "Make this profitable",
+                                "Create a roadmap",
+                                "Find problems",
+                                "Generate a business model"
+                            )
+                            
+                            prompts.forEach { prompt ->
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 6.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = SurfaceDark,
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceVariantDark),
+                                    onClick = { viewModel.sendMessage(prompt) }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = NeonBlue, modifier = Modifier.size(20.dp))
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text(text = prompt, color = Color.White, fontSize = 15.sp)
+                                    }
+                                }
+                            }
                         }
                     }
                 }

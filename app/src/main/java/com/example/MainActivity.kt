@@ -110,7 +110,7 @@ fun BrainDropApp(ideaViewModel: IdeaViewModel, aiAssistantViewModel: AiAssistant
                     AiAssistantScreen(viewModel = aiAssistantViewModel)
                 }
                 composable<ProfileRoute> {
-                    ProfileScreen()
+                    ProfileScreen(viewModel = ideaViewModel, aiViewModel = aiAssistantViewModel)
                 }
             }
         }

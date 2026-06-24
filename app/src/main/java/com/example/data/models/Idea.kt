@@ -14,5 +14,9 @@ data class Idea(
     val createdDate: Long = System.currentTimeMillis(),
     val updatedDate: Long = System.currentTimeMillis(),
     val isFavorite: Boolean = false,
-    val aiResponse: String? = null
+    val isArchived: Boolean = false,
+    val aiResponse: String? = null,
+    val aiScore: Int? = null,
+    val aiCategory: String? = null,
+    val projectData: String? = null
 )

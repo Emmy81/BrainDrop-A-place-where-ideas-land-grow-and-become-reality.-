@@ -27,11 +27,19 @@ fun BrainLibraryScreen(
     val allIdeas by viewModel.allIdeas.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf("All") }
-    val filters = listOf("All", "Idea", "Project", "Task", "Note")
+    val filters = listOf("All", "Idea", "Project", "Task", "Note", "Favorites", "Archived")
 
     val filteredIdeas = allIdeas.filter {
-        (selectedFilter == "All" || it.category == selectedFilter) &&
-        (it.title.contains(searchQuery, ignoreCase = true) || it.description.contains(searchQuery, ignoreCase = true))
+        val matchesCategory = when (selectedFilter) {
+            "All" -> !it.isArchived
+            "Favorites" -> it.isFavorite && !it.isArchived
+            "Archived" -> it.isArchived
+            else -> it.category == selectedFilter && !it.isArchived
+        }
+        val matchesSearch = it.title.contains(searchQuery, ignoreCase = true) || 
+                            it.description.contains(searchQuery, ignoreCase = true)
+        
+        matchesCategory && matchesSearch
     }
 
     Box(

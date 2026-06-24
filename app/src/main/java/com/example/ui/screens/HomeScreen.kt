@@ -54,7 +54,7 @@ fun HomeScreen(
     val ideaCount = allIdeas.count { it.category == "Idea" }
     val projectCount = allIdeas.count { it.category == "Project" }
     val taskCount = allIdeas.count { it.category == "Task" }
-    val noteCount = allIdeas.count { it.category == "Note" }
+    val aiInsightCount = allIdeas.count { it.aiResponse != null }
 
     Box(
         modifier = Modifier
@@ -68,13 +68,13 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
-                    text = "Good morning, User \uD83D\uDC4B",
+                    text = "Good morning \uD83D\uDC4B",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
                 Text(
-                    text = "What's on your mind today?",
+                    text = "Capture your next breakthrough idea.",
                     fontSize = 16.sp,
                     color = TextSecondary
                 )
@@ -113,7 +113,7 @@ fun HomeScreen(
                     StatCard(Modifier.weight(1f), "Ideas", ideaCount.toString(), Icons.Default.Lightbulb, NeonPurple)
                     StatCard(Modifier.weight(1f), "Projects", projectCount.toString(), Icons.Default.Folder, NeonBlue)
                     StatCard(Modifier.weight(1f), "Tasks", taskCount.toString(), Icons.Default.Task, Color(0xFF00E676))
-                    StatCard(Modifier.weight(1f), "Notes", noteCount.toString(), Icons.Default.Edit, Color(0xFFFFB300))
+                    StatCard(Modifier.weight(1f), "AI Insights", aiInsightCount.toString(), Icons.Default.AutoAwesome, NeonPurple)
                 }
                 Spacer(modifier = Modifier.height(32.dp))
             }
@@ -153,7 +153,8 @@ fun QuickCaptureBox(onCreateClick: () -> Unit, onAiClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onCreateClick() },
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceDark)
+        colors = CardDefaults.cardColors(containerColor = SurfaceDark.copy(alpha = 0.7f)),
+        border = androidx.compose.foundation.BorderStroke(1.dp, NeonBlue.copy(alpha = 0.3f))
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -162,18 +163,19 @@ fun QuickCaptureBox(onCreateClick: () -> Unit, onAiClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Drop your idea...",
+                    text = "Drop a thought...",
                     color = TextSecondary,
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     modifier = Modifier.weight(1f)
                 )
                 
                 Box(
                     modifier = Modifier
                         .size(48.dp)
+                        .clickable { onAiClick() }
                         .background(
                             brush = Brush.radialGradient(
-                                colors = listOf(NeonBlue.copy(alpha = 0.5f), Color.Transparent)
+                                colors = listOf(NeonPurple.copy(alpha = 0.5f), Color.Transparent)
                             )
                         ),
                     contentAlignment = Alignment.Center
@@ -181,7 +183,7 @@ fun QuickCaptureBox(onCreateClick: () -> Unit, onAiClick: () -> Unit) {
                     Icon(
                         imageVector = Icons.Default.AutoAwesome,
                         contentDescription = "AI",
-                        tint = NeonPurple
+                        tint = NeonBlue
                     )
                 }
             }
@@ -192,21 +194,21 @@ fun QuickCaptureBox(onCreateClick: () -> Unit, onAiClick: () -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.Mic, contentDescription = "Voice", tint = TextSecondary, modifier = Modifier.size(20.dp))
-                Icon(Icons.Default.PhotoCamera, contentDescription = "Photo", tint = TextSecondary, modifier = Modifier.size(20.dp))
-                Icon(Icons.Default.Edit, contentDescription = "Note", tint = TextSecondary, modifier = Modifier.size(20.dp))
+                Icon(Icons.Default.Mic, contentDescription = "Voice", tint = TextSecondary, modifier = Modifier.size(24.dp))
+                Icon(Icons.Default.PhotoCamera, contentDescription = "Photo", tint = TextSecondary, modifier = Modifier.size(24.dp))
                 
                 Spacer(modifier = Modifier.weight(1f))
                 
                 Button(
                     onClick = onCreateClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = SurfaceVariantDark),
+                    colors = ButtonDefaults.buttonColors(containerColor = NeonPurple.copy(alpha = 0.2f)),
                     shape = RoundedCornerShape(12.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, NeonPurple),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Add, contentDescription = "Add", tint = NeonPurple, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Drop Idea", color = Color.White, fontSize = 12.sp)
+                    Text("Drop Idea", color = Color.White, fontSize = 14.sp)
                 }
             }
         }
